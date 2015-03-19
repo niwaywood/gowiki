@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// handler middleware which ensures that the path is valid
 func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Here we will extract the page title from the Request,
@@ -18,6 +19,7 @@ func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.Handl
 	}
 }
 
+// handler to display wiki page contents, redirecting to edit template if page doesnt exist
 func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
 	log.Println("in viewHander...")
 
@@ -29,6 +31,7 @@ func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
 	renderTemplate(w, "view", p)
 }
 
+// handler to edit the contents of a wiki page
 func editHandler(w http.ResponseWriter, r *http.Request, title string) {
 	log.Println("in editHandler...")
 
@@ -39,6 +42,7 @@ func editHandler(w http.ResponseWriter, r *http.Request, title string) {
 	renderTemplate(w, "edit", p)
 }
 
+// handler to save a new page or update an existing page
 func saveHandler(w http.ResponseWriter, r *http.Request, title string) {
 	log.Println("in saveHandler...")
 

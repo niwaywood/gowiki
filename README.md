@@ -5,7 +5,7 @@ This is my first Go project. After I completed [A Tour of Go](http://tour.golang
 
 To learn more about Go I have decided to extend the codewalk solution.
 
-The current extensions are:
+The **current** extensions are:
 - Dependency management with [nut](https://github.com/jingweno/nut)
 - Using [MongoDb](http://www.mongodb.org/) (via [mgo](http://labix.org/mgo)) instead of using files
 

@@ -7,3 +7,4 @@ authors = ["Nick Waywood"]
 [dependencies]
 
 "gopkg.in/mgo.v2" = ""
+"github.com/gorilla/mux" = ""

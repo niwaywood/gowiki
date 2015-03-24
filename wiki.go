@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"regexp"
 	"text/template"
+    "gowiki/vendor/_nuts/github.com/gorilla/mux"
 )
 
 // A struct to represent the contents of a wiki page
@@ -68,20 +69,24 @@ func main() {
 	// connect to mongodb
 	session, err := mgo.Dial("localhost")
 	if err != nil {
-		panic(err)
+        log.Println("Unable to connect to MongoDB")
+        return
 	}
 	globalSession = session
 	defer session.Close()
 
+    // setup mux router
+    r := mux.NewRouter()
+
     // setup handlers
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/view/FrontPage", http.StatusFound)
 	})
-	http.HandleFunc("/view/", makeHandler(viewHandler))
-	http.HandleFunc("/edit/", makeHandler(editHandler))
-	http.HandleFunc("/save/", makeHandler(saveHandler))
+	r.Handle("/view/{title}", makeHandler(http.HandlerFunc(viewHandler)))
+	r.Handle("/edit/{title}", makeHandler(http.HandlerFunc(editHandler)))
+	r.Handle("/save/{title}", makeHandler(http.HandlerFunc(saveHandler)))
 
     log.Println("Started server, listening on post 8080")
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080", r)
 
 }

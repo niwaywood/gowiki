@@ -12,6 +12,7 @@ The **current** extensions are:
 Future planned extensions are:
 - Middleware for logging, 404's etc
 - Third party router to make url analysis simpler (i.e. parameterizing url path)
+- make home page display list of wiki pages
 
 ## Setup
 - Setup mongoDB

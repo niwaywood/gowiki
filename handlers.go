@@ -13,7 +13,7 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
     title := mux.Vars(r)["title"]
 	p, err := loadPage(title)
 	if err != nil {
-		http.Redirect(w, r, "/edit/"+title, http.StatusFound)
+		http.Redirect(w, r, "/wiki/edit/"+title, http.StatusFound)
 		return
 	}
 	renderTemplate(w, "view", p)
@@ -45,5 +45,5 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/view/"+title, http.StatusFound)
+	http.Redirect(w, r, "/wiki/view/"+title, http.StatusFound)
 }

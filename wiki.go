@@ -18,7 +18,7 @@ type Page struct {
 
 var (
 	templates     = template.Must(template.ParseFiles("tmpl/edit.html", "tmpl/view.html"))
-	validPath     = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
+	validPath     = regexp.MustCompile("^/wiki/(edit|save|view)/([a-zA-Z0-9]+)$")
 	globalSession *mgo.Session
 	dbName        string = "gowiki"
 )
@@ -65,33 +65,39 @@ func renderTemplate(w http.ResponseWriter, teml string, p *Page) {
 }
 
 func main() {
-	log.Println("Starting server...")
+    log.Println("Starting server...")
 
-	// connect to mongodb
-	session, err := mgo.Dial("localhost")
-	if err != nil {
+    // connect to mongodb
+    session, err := mgo.Dial("localhost")
+    if err != nil {
         log.Println("Unable to connect to MongoDB")
         return
-	}
-	globalSession = session
-	defer session.Close()
+    }
+    globalSession = session
+    defer session.Close()
 
     // setup mux router
     r := mux.NewRouter()
+    mr := mux.NewRouter()
 
     // setup handlers
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "/view/FrontPage", http.StatusFound)
-	})
-	r.HandleFunc("/view/{title}", viewHandler)
-	r.HandleFunc("/edit/{title}", editHandler)
-	r.HandleFunc("/save/{title}", saveHandler)
+    r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        http.Redirect(w, r, "/wiki/view/FrontPage", http.StatusFound)
+    })
+    // route specific middleware for /wiki paths
+    r.PathPrefix("/wiki").Handler(negroni.New(
+    negroni.HandlerFunc(validateURL),
+    negroni.Wrap(mr),
+    ))
+    sub := mr.PathPrefix("/wiki").Subrouter()
+    sub.HandleFunc("/view/{title}", viewHandler).Methods("GET")
+    sub.HandleFunc("/edit/{title}", editHandler).Methods("GET")
+    sub.HandleFunc("/save/{title}", saveHandler).Methods("POST")
+    //r.Handle("/wiki/", s)
 
-    // setup negroni middleware
-    n := negroni.New(negroni.HandlerFunc(validateURL))
-    //n := negroni.New()
+    // setup negroni middleware for all routes
+    n := negroni.New(negroni.HandlerFunc(myMiddleware))
     n.UseHandler(r)
 
-	n.Run(":8080")
-
+    n.Run(":8080")
 }

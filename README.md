@@ -8,14 +8,13 @@ To learn more about Go I have decided to extend the codewalk solution.
 The **current** extensions are:
 - Dependency management with [nut](https://github.com/jingweno/nut)
 - Using [MongoDb](http://www.mongodb.org/) (via [mgo](http://labix.org/mgo)) instead of using files
-- Using [mux](http://www.gorillatoolkit.org/pkg/mux) router to parameterise url
+- Using [mux](http://www.gorillatoolkit.org/pkg/mux) router to parameterise url and enforce http method types
 - Using [negroni](https://github.com/codegangsta/negroni) to mount middleware
 
 Future planned extensions are:
-- Middleware for logging, 404's etc
-- mux to specify http request types (GET, POST etc)
-- make home page display list of wiki pages
 - Use nested routers with mux so that negroni can mount validateURL middleware only on edit, save and viewHandler's
+- Middleware for logging, 404's etc
+- make home page display list of wiki pages
 
 ## Setup
 - Setup mongoDB

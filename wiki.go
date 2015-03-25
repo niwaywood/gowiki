@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"text/template"
     "gowiki/vendor/_nuts/github.com/gorilla/mux"
+    "gowiki/vendor/_nuts/github.com/codegangsta/negroni"
 )
 
 // A struct to represent the contents of a wiki page
@@ -82,11 +83,15 @@ func main() {
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/view/FrontPage", http.StatusFound)
 	})
-	r.Handle("/view/{title}", makeHandler(http.HandlerFunc(viewHandler)))
-	r.Handle("/edit/{title}", makeHandler(http.HandlerFunc(editHandler)))
-	r.Handle("/save/{title}", makeHandler(http.HandlerFunc(saveHandler)))
+	r.HandleFunc("/view/{title}", viewHandler)
+	r.HandleFunc("/edit/{title}", editHandler)
+	r.HandleFunc("/save/{title}", saveHandler)
 
-    log.Println("Started server, listening on post 8080")
-	http.ListenAndServe(":8080", r)
+    // setup negroni middleware
+    n := negroni.New(negroni.HandlerFunc(validateURL))
+    //n := negroni.New()
+    n.UseHandler(r)
+
+	n.Run(":8080")
 
 }

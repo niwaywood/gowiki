@@ -6,20 +6,6 @@ import (
     "gowiki/vendor/_nuts/github.com/gorilla/mux"
 )
 
-// handler middleware which ensures that the path is valid
-func makeHandler(handler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Here we will extract the page title from the Request,
-		// and call the provided handler 'fn'
-		m := validPath.FindStringSubmatch(r.URL.Path)
-		if m == nil {
-			http.NotFound(w, r)
-			return
-		}
-		handler.ServeHTTP(w, r)
-	})
-}
-
 // handler to display wiki page contents, redirecting to edit template if page doesnt exist
 func viewHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("in viewHander...")

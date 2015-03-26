@@ -65,8 +65,6 @@ func renderTemplate(w http.ResponseWriter, teml string, p *Page) {
 }
 
 func main() {
-    log.Println("Starting server...")
-
     // connect to mongodb
     session, err := mgo.Dial("localhost")
     if err != nil {
@@ -76,7 +74,7 @@ func main() {
     globalSession = session
     defer session.Close()
 
-    // setup mux router
+    // setup mux routers
     r := mux.NewRouter()
     mr := mux.NewRouter()
 
@@ -93,10 +91,9 @@ func main() {
     sub.HandleFunc("/view/{title}", viewHandler).Methods("GET")
     sub.HandleFunc("/edit/{title}", editHandler).Methods("GET")
     sub.HandleFunc("/save/{title}", saveHandler).Methods("POST")
-    //r.Handle("/wiki/", s)
 
     // setup negroni middleware for all routes
-    n := negroni.New(negroni.HandlerFunc(myMiddleware))
+    n := negroni.New(negroni.HandlerFunc(myMiddleware), negroni.NewLogger())
     n.UseHandler(r)
 
     n.Run(":8080")

@@ -18,7 +18,7 @@ func validateURL(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) 
 
 func myMiddleware(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
     // do some stuff before
-    log.Println("I am generic middleware")
+    log.Println("I am a generic middleware example")
     next(rw, r)
     // do some stuff after
 }

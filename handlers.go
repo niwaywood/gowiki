@@ -47,3 +47,7 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, "/wiki/view/"+title, http.StatusFound)
 }
+
+func errorHandler(w http.ResponseWriter, r *http.Request) {
+    w.Write([]byte("My 404"))
+}

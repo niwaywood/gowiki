@@ -92,9 +92,13 @@ func main() {
     sub.HandleFunc("/edit/{title}", editHandler).Methods("GET")
     sub.HandleFunc("/save/{title}", saveHandler).Methods("POST")
 
+    // mount 404 handler
+    r.NotFoundHandler = http.HandlerFunc(errorHandler)
+
     // setup negroni middleware for all routes
     n := negroni.New(negroni.HandlerFunc(myMiddleware), negroni.NewLogger())
     n.UseHandler(r)
+
 
     n.Run(":8080")
 }

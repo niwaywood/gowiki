@@ -22,3 +22,4 @@ func myMiddleware(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc
     next(rw, r)
     // do some stuff after
 }
+
